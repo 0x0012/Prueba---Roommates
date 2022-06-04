@@ -7,7 +7,7 @@ const http = require('http')
 const url = require('url')
 const fs = require('fs')
 const { newRoommate, saveRoommate } = require('./roommates')
-const { addSpending } = require('./spendings')
+const { addSpending, updateSpending } = require('./spendings')
 
 http
   .createServer((req, res) => {
@@ -29,6 +29,7 @@ http
       newRoommate()
         .then(async roommate => {
           saveRoommate(roommate)
+          res.statusCode = 201
           res.end(JSON.stringify(roommate))
         }) 
         .catch( err => {
@@ -67,10 +68,24 @@ http
       req.on('end', () => {
         if (spending.roommate != null) {
           addSpending(spending)
+          res.statusCode = 201
           res.end()
         } else {
           showERROR(res, 400, 'ERROR: roommate is null')
         }
+      })
+    }
+  
+    // Procesa la edicion de un gasto
+    if (req.url.startsWith('/gasto') && req.method == 'PUT') {
+      const { id } = url.parse(req.url, true).query
+      let spending
+      req.on('data', payload => spending = JSON.parse(payload))
+      req.on('end', () => {
+        spending.id = id
+        updateSpending(spending)
+        res.statusCode = 201
+        res.end()
       })
     }
   })

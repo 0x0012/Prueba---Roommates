@@ -17,4 +17,24 @@ const addSpending = (newSpending) => {
   updateSpendings(spending)
 }
 
-module.exports = { addSpending }
+const updateSpending = newSpending => {
+  const gastosJSON = JSON.parse(fs.readFileSync('gastos.json', 'utf8'))
+  
+  // Revertir gasto anterior
+  const oldSpending = gastosJSON.gastos.find(s => s.id == newSpending.id)
+  oldSpending.monto = -oldSpending.monto
+  updateSpendings(oldSpending)
+  
+  // Actualiza gasto
+  gastosJSON.gastos.forEach(s => {
+    if (s.id == newSpending.id) {
+      s.roommate = newSpending.roommate
+      s.descripcion = newSpending.descripcion
+      s.monto = newSpending.monto
+    }
+  })
+  fs.writeFileSync('gastos.json', JSON.stringify(gastosJSON))
+  updateSpendings(newSpending)
+}
+
+module.exports = { addSpending, updateSpending }
