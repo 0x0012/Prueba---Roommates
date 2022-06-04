@@ -7,6 +7,7 @@ const http = require('http')
 const url = require('url')
 const fs = require('fs')
 const { newRoommate, saveRoommate } = require('./roommates')
+const { addSpending } = require('./spendings')
 
 http
   .createServer((req, res) => {
@@ -35,14 +36,42 @@ http
         })
     }
   
-    if (req.url.startsWith('/roommates') && req.method == 'GET') {
-      res.setHeader('content-type', 'application/json')
-      res.end(fs.readFileSync('roommates.json', 'utf8'))
+    // Devuelve todos los roommates desde archivo JSON
+    if (req.url.startsWith('/roommates') && req.method == 'GET') { 
+      fs.readFile('roommates.json', 'utf8', (err, json) => {
+        if (!err) {
+          res.writeHead(200, { 'content-type': 'application/json'})
+          res.end(json)
+        } else {
+          showERROR(res, 503, err)
+        }
+      })
     }
   
+    // Devuelve todos los gastos desde archivo JSON
     if (req.url.startsWith('/gastos') && req.method == 'GET') {
-      res.setHeader('content-type', 'application/json')
-      res.end(fs.readFileSync('gastos.json', 'utf8'))
+      fs.readFile('gastos.json', 'utf8', (err, json) => {
+        if (!err) {
+          res.writeHead(200, { 'content-type': 'application/json'})
+          res.end(json)
+        } else {
+          showERROR(res, 503, err)
+        }
+      })
+    }
+  
+    // Crea y procesa un nuevo gasto
+    if (req.url.startsWith('/gasto') && req.method == 'POST') {
+      let spending
+      req.on('data', payload => spending = JSON.parse(payload))
+      req.on('end', () => {
+        if (spending.roommate != null) {
+          addSpending(spending)
+          res.end()
+        } else {
+          showERROR(res, 400, 'ERROR: roommate is null')
+        }
+      })
     }
   })
   .listen(3000, () => console.log('✅ SERVER ON : http://localhost:3000/'))
@@ -55,9 +84,14 @@ const showERROR = (res, code, err) => {
       text: 'ERROR: No se pudo obtener el recurso solicitado -> '
     },
     500: {
-      html: '<h1>ERROR :(</h1><h2>Codigo 500</h2>No se pudo crear el Roommate.',
-      text: 'ERROR: No se pudo crear el Roommate -> '
-    }}
+      html: '<h1>ERROR :(</h1><h2>Codigo 500</h2>No se pudo crear el elemento.',
+      text: 'ERROR: No se pudo crear el elemento -> '
+    },
+    400: {
+      html: '<h1>ERROR :(</h1><h2>Codigo 400</h2>La peticion contiene un error.',
+      text: 'ERROR: La peticion contiene un error -> '
+    }
+  }
   
     res.writeHead(code, { 'content-type': 'text/html'})
     res.end(_ERROR[code].html)

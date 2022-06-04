@@ -25,4 +25,21 @@ const saveRoommate = roommate => {
   fs.writeFileSync('roommates.json', JSON.stringify(roommatesJSON))
 }
 
-module.exports = { newRoommate, saveRoommate }
+const updateSpendings = (spending) => {    
+  const roommatesJSON = JSON.parse(fs.readFileSync('roommates.json', 'utf8'))
+  const roommate = spending.roommate
+  const roommates = roommatesJSON.roommates.length
+  const amount = Math.round(spending.monto / roommates)
+  
+  if (roommates > 1) {
+    roommatesJSON.roommates.forEach(rm => {
+      rm.nombre == roommate
+        ? rm.recibe += amount
+        : rm.debe += amount
+    })
+  
+    fs.writeFileSync('roommates.json', JSON.stringify(roommatesJSON))
+  }
+}
+
+module.exports = { newRoommate, saveRoommate, updateSpendings }
