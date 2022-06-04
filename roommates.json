@@ -1,1 +1,3 @@
-{"roommates":[{"id":"13c80b","email":"aubrey.young@example.com","nombre":"Aubrey Young","debe":0,"recibe":0},{"id":"f4b066","email":"philip.wilson@example.com","nombre":"Philip Wilson","debe":0,"recibe":0},{"id":"512706","email":"ayse.koc@example.com","nombre":"Ayşe Koç","debe":0,"recibe":0},{"id":"8a8432","email":"mylo.macnack@example.com","nombre":"Mylo Macnack","debe":0,"recibe":0},{"id":"9ce2a5","email":"sara.cortes@example.com","nombre":"Sara Cortes","debe":0,"recibe":0},{"id":"923563","email":"amelia.barrett@example.com","nombre":"Amelia Barrett","debe":0,"recibe":0},{"id":"c87a08","email":"sylvia.gutierrez@example.com","nombre":"Sylvia Gutierrez","debe":0,"recibe":0},{"id":"d72c01","email":"gokhan.karaduman@example.com","nombre":"Gökhan Karaduman","debe":0,"recibe":0},{"id":"a8f30f","email":"shilan.moraal@example.com","nombre":"Shilan Moraal","debe":0,"recibe":0}]}
+{
+  "roommates": []
+}
