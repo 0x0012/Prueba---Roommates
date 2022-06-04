@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/0x0012/Prueba---Roommates/issues"
   },
-  "homepage": "https://github.com/0x0012/Prueba---Roommates#readme"
+  "homepage": "https://github.com/0x0012/Prueba---Roommates#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "uuid": "^8.3.2"
+  }
 }
