@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid')
 const fs = require('fs')
-const { updateSpendings } = require('./roommates')
+const { calcRMDebs } = require('./roommates')
 
 const addSpending = (newSpending) => {
   const spending = {
@@ -14,16 +14,16 @@ const addSpending = (newSpending) => {
   gastosJSON.gastos.push(spending)
   fs.writeFileSync('gastos.json', JSON.stringify(gastosJSON))
   
-  updateSpendings(spending)
+  calcRMDebs(spending)
 }
 
 const updateSpending = newSpending => {
   const gastosJSON = JSON.parse(fs.readFileSync('gastos.json', 'utf8'))
   
-  // Revertir gasto anterior
+  // Revierte el gasto anterior
   const oldSpending = gastosJSON.gastos.find(s => s.id == newSpending.id)
   oldSpending.monto = -oldSpending.monto
-  updateSpendings(oldSpending)
+  calcRMDebs(oldSpending)
   
   // Actualiza gasto
   gastosJSON.gastos.forEach(s => {
@@ -34,7 +34,21 @@ const updateSpending = newSpending => {
     }
   })
   fs.writeFileSync('gastos.json', JSON.stringify(gastosJSON))
-  updateSpendings(newSpending)
+  calcRMDebs(newSpending)
 }
 
-module.exports = { addSpending, updateSpending }
+const deleteSpending = id => {
+  const gastosJSON = JSON.parse(fs.readFileSync('gastos.json', 'utf8'))
+  
+  // Revierte gasto de roomates
+  const spending = gastosJSON.gastos.find(s => s.id == id)
+  spending.monto = -spending.monto
+  calcRMDebs(spending)
+  
+  // Elimina gasto
+  let newGastosJSON = { gastos: [] }  
+  newGastosJSON.gastos = gastosJSON.gastos.filter(s => s.id != id)
+  fs.writeFileSync('gastos.json', JSON.stringify(newGastosJSON))
+}
+
+module.exports = { addSpending, updateSpending, deleteSpending }

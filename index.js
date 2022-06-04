@@ -7,7 +7,7 @@ const http = require('http')
 const url = require('url')
 const fs = require('fs')
 const { newRoommate, saveRoommate } = require('./roommates')
-const { addSpending, updateSpending } = require('./spendings')
+const { addSpending, updateSpending, deleteSpending } = require('./spendings')
 
 http
   .createServer((req, res) => {
@@ -87,6 +87,14 @@ http
         res.statusCode = 201
         res.end()
       })
+    }
+  
+    // Procesa la eliminacion de un gasto
+    if (req.url.startsWith('/gasto') && req.method == 'DELETE') {
+      const { id } = url.parse(req.url, true).query
+      deleteSpending(id)
+      res.statusCode = 200
+      res.end()      
     }
   })
   .listen(3000, () => console.log('✅ SERVER ON : http://localhost:3000/'))
