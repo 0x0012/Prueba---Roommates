@@ -21,6 +21,7 @@
   "homepage": "https://github.com/0x0012/Prueba---Roommates#readme",
   "dependencies": {
     "axios": "^0.27.2",
+    "nodemailer": "^6.7.5",
     "uuid": "^8.3.2"
   }
 }

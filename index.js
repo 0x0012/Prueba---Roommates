@@ -8,7 +8,8 @@ const url = require('url')
 const fs = require('fs')
 const { newRoommate, saveRoommate } = require('./roommates')
 const { addSpending, updateSpending, deleteSpending } = require('./spendings')
-
+const { email2roommates } = require('./mailer')
+ 
 http
   .createServer((req, res) => {
     
@@ -68,6 +69,7 @@ http
       req.on('end', () => {
         if (spending.roommate != null) {
           addSpending(spending)
+          email2roommates(spending)
           res.statusCode = 201
           res.end()
         } else {
